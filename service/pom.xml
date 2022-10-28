@@ -44,10 +44,10 @@
             <optional>true</optional>
         </dependency>
         <!-- 服务调用feign -->
-        <!-- <dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>-->
+        </dependency>
 
         <!-- 服务注册  -->
         <dependency>
@@ -63,6 +63,12 @@
         <dependency>
             <groupId>com.atguigu</groupId>
             <artifactId>common_utils</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.atguigu</groupId>
+            <artifactId>service_cmn_client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

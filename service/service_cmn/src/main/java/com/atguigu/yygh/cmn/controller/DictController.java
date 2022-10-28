@@ -30,6 +30,14 @@ public class DictController {
         return R.ok().data("list", list);
     }
 
+    @ApiOperation(value = "根据dictCode查询子数据列表")
+    @GetMapping("findByDictCode/{dictCode}")
+    public R findByDictCode(@PathVariable String dictCode){
+        List<Dict> list = dictService.findByDictCode(dictCode);
+        return R.ok().data("list",list);
+    }
+
+
     @ApiOperation(value = "导出数据")
     @GetMapping("/exportData")
     public void exportData(HttpServletResponse response){

@@ -46,6 +46,16 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         return dicts;
     }
 
+    // 根据dictCode查询子数据列表
+    @Override
+    @Cacheable(value = "dict", key = "'selectIndexList'+#dictCode")
+    public List<Dict> findByDictCode(String dictCode) {
+        Dict parentDict = this.getParentDict(dictCode);
+        List<Dict> list = this.findChildData(parentDict.getId());
+        return list;
+    }
+
+
     // 导出数据
     @Override
     public void exportData(HttpServletResponse response) {
@@ -123,7 +133,6 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         wrapper.eq("dict_code",parentDictCode);
         return baseMapper.selectOne(wrapper);
     }
-
 
     private boolean isChildren(Long id) {
         QueryWrapper<Dict> wrapper = new QueryWrapper<>();
