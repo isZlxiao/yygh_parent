@@ -17,4 +17,6 @@ public interface DictService extends IService<Dict> {
 
     // 导入数据
     void importData(MultipartFile file);
+    // 获取数据字典名称
+    String getNameByParentDictCodeAndValue(String parentDictCode, String value);
 }

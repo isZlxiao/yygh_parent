@@ -42,4 +42,19 @@ public class DictController {
         dictService.importData(file);
         return R.ok();
     }
+
+    @ApiOperation(value = "获取数据字典名称(自定义)")
+    @GetMapping(value = "/getName/{parentDictCode}/{value}")
+    public String getName(@PathVariable String parentDictCode,@PathVariable String value){
+        String name = dictService.getNameByParentDictCodeAndValue(parentDictCode,value);
+        return name;
+    }
+
+    @ApiOperation(value = "获取数据字典名称(国标)")
+    @GetMapping(value = "/getName/{value}")
+    public String getName(@PathVariable String value){
+        String name = dictService.getNameByParentDictCodeAndValue("",value);
+        return name;
+    }
+
 }

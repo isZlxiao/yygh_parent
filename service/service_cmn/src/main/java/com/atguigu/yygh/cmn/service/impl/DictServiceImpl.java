@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -74,7 +75,6 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         }
     }
 
-
     // 导入数据
     @Override
     public void importData(MultipartFile file) {
@@ -91,6 +91,37 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
             throw new YyghException(20001,"导入数据出错");
         }
 
+    }
+
+    // 获取数据字典名称
+    @Override
+    public String getNameByParentDictCodeAndValue(String parentDictCode, String value) {
+        if(StringUtils.isEmpty(parentDictCode)){
+            // 国标数据查询
+            QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+            wrapper.eq("value",value);
+            Dict dict = baseMapper.selectOne(wrapper);
+            if(dict!=null) return dict.getName();
+        }else{
+            // 自定义数据查询
+            //2.1根据字典编码查询父级别数据
+            Dict parentDict = this.getParentDict(parentDictCode);
+            //2.2根据父级别id+value查询数据
+            QueryWrapper<Dict> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("parent_id",parentDict.getId());
+            queryWrapper.eq("value",value);
+            Dict dict = baseMapper.selectOne(queryWrapper);
+            return dict.getName();
+        }
+
+        return null;
+    }
+
+    // 根据父节点 dictCode 查询父节点
+    private Dict getParentDict(String parentDictCode) {
+        QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+        wrapper.eq("dict_code",parentDictCode);
+        return baseMapper.selectOne(wrapper);
     }
 
 
