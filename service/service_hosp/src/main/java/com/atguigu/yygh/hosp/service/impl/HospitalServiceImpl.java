@@ -2,6 +2,7 @@ package com.atguigu.yygh.hosp.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.atguigu.yygh.cmn.client.DictFeignClient;
+import com.atguigu.yygh.common.handler.YyghException;
 import com.atguigu.yygh.enums.DictEnum;
 import com.atguigu.yygh.hosp.repository.HospitalRepository;
 import com.atguigu.yygh.hosp.service.HospitalService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -101,6 +103,40 @@ public class HospitalServiceImpl implements HospitalService {
         return map;
     }
 
+
+
+    // 根据医院编码hoscode 查询医院信息详情[医院基本信息+预约规则]
+    @Override
+    public Map<String, Object> getHospInfo(String hoscode) {
+        Map<String,Object> map = new HashMap<>();
+        Hospital hos = hospitalRepository.getByHoscode(hoscode);
+        if(hos==null){
+            throw new YyghException(20001,"医院编码有误");
+        }
+        BookingRule bookingRule = hos.getBookingRule();
+        hos.setBookingRule(null);
+        map.put("bookingRule",bookingRule);
+        map.put("hospital",hos);
+        return map;
+    }
+
+    // 根据医院编码获取医院名称
+    @Override
+    public String getHospName(String hoscode) {
+        Hospital hos = hospitalRepository.getByHoscode(hoscode);
+        if(hos==null){
+            throw new YyghException(20001,"医院编码有误");
+        }
+        return hos.getHosname();
+    }
+
+    // 根据医院名称获取医院列表
+    @Override
+    public List<Hospital> findByHosname(String hosname) {
+        List<Hospital> list = hospitalRepository.getByHosnameLike(hosname);
+        return list;
+    }
+
     // 翻译cmn字段
     private Hospital packHospital(Hospital res) {
         String hostype = dictFeignClient.getName(DictEnum.HOSTYPE.getDictCode(), res.getHostype());
@@ -108,7 +144,9 @@ public class HospitalServiceImpl implements HospitalService {
         String city = dictFeignClient.getName(res.getCityCode());
         String districe = dictFeignClient.getName(res.getDistrictCode());
 
-        res.getParam().put("hostype",hostype);
+        // 医院等级
+        res.getParam().put("hostypeString",hostype);
+        // 医院详细地址
         res.getParam().put("fullAddress",province+city+districe+res.getAddress());
         return res;
     }
