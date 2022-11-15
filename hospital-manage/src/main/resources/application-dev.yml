@@ -15,11 +15,12 @@ spring:
     prefix: classpath:/templates/
 
   redis:
-    host: 192.168.6.129
+#    host: 192.168.6.129
+    host: 152.136.108.111
     port: 6379
     database: 0
     timeout: 1800000
-    password:
+    password: 123456
     lettuce:
       pool:
         max-active: 20 #最大连接数
@@ -29,7 +30,9 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/yygh_manage?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+#    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/yygh_manage?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://152.136.108.111:33306/yygh_manage?characterEncoding=utf-8&useSSL=false
     username: root
     password: 123456
     hikari:

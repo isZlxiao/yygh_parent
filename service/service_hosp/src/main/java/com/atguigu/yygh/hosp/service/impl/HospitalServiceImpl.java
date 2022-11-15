@@ -11,6 +11,7 @@ import com.atguigu.yygh.model.hosp.Hospital;
 import com.atguigu.yygh.vo.hosp.HospitalQueryVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -93,6 +94,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     // 根据id获取医院详情
     @Override
+//    @Cacheable(value = "hosp",key = "'selectIndexMap'+#id")     // 自建
     public Map<String, Object> getHospById(String id) {
         Hospital hospital = hospitalRepository.findById(id).get();
         Map<String,Object> map = new HashMap<>();
@@ -109,7 +111,7 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     public Map<String, Object> getHospInfo(String hoscode) {
         Map<String,Object> map = new HashMap<>();
-        Hospital hos = hospitalRepository.getByHoscode(hoscode);
+        Hospital hos = this.packHospital(hospitalRepository.getByHoscode(hoscode));
         if(hos==null){
             throw new YyghException(20001,"医院编码有误");
         }
